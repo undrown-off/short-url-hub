@@ -25,10 +25,10 @@ $userData->age = $age;
 $userData->email = $email;
 
 // Создание массива с данными пользователя
-$userData = [];
-$userData['name'] = $name;
-$userData['age'] = $age;
-$userData['$email'] = $email;
+$userDataArray = [];
+$userDataArray['name'] = $name;
+$userDataArray['age'] = $age;
+$userDataArray['$email'] = $email;
 
 // Вывод данных пользователя на экран
 echo "\nСпасибо! Вот информация, которую вы ввели:\n";
