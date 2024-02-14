@@ -2,7 +2,7 @@ This will be URL shortener service
 
 Our team:
 Sergey Andronov
-...
+Artur Skomarohov
 
 
 **Задание 1.**
@@ -42,3 +42,5 @@ _/data/_ - каталог который заменяет собой базу д
 Ваша ссылка готова.
 [URL]
 ```
+
+
