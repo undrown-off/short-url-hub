@@ -1,3 +1,5 @@
+<?php
+
 function find_short_link($short_link = '') {
     // проверка полученной ссылки на существование в содержимом файлов
 }
@@ -6,13 +8,11 @@ function find_full_link($full_link = '') {
     // проверка полученной ссылки на существование в именах файлов
 }
 
-function create_short_link():string {
+function create_short_link() {
     // создание короткой ссылки
 }
 
-function save_link($short_link = '', $full_link = ''): {
-    // сохранение ссылки в файл
-}function save_link($short_link = '', $full_link = ''): {
+function save_link($short_link = '', $full_link = '') {
     // сохранение ссылки в файл
 }
 
