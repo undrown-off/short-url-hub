@@ -35,3 +35,6 @@ echo "\nСпасибо! Вот информация, которую вы вве�
 echo "Имя: {$userData->name}\n";
 echo "Возраст: {$userData->age}\n";
 echo "Email: {$userData->email}\n";
+
+
+
