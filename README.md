@@ -14,7 +14,7 @@ Sergey Andronov
 
 **Ход решения**
 
-создаём /index.php, /link.php, /go.php, /data/
+создаём /index.php, /link.php, /go.php
 
 _index.php_ - пишет инструкцию, рисует форму (action=link.php, type=get), где можно ввести ссылку.
 
