@@ -1,0 +1,82 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  font-family: arial;
+}
+
+body {
+  background: linear-gradient(to bottom, #2980b9, #2c3e50);
+  display: flex;
+  justify-content: center;
+  padding-top: 200px;
+
+}
+
+.bg-name{
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgb(96, 201, 224);
+  opacity: 0.1;
+  font-size: 120px;
+}
+
+.app {
+  padding: 40px ;
+  border-radius: 5px;
+  background-color:rgba(44, 62, 80,.4);
+  height: 300px;
+  max-width: 600px;
+  color: white;
+}
+.app__title{
+  text-align: center;
+  line-height: 25px;
+}
+.app__inner{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+.app__form {
+  padding: 40px 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+
+}
+.app__form input {
+  height: 30px;
+  padding: 5px;
+  border-radius: 4px;
+}
+.app__form input[type="url"]{
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 15px;
+  border: 2px solid grey;
+
+}
+.app__form input[type="url"]::placeholder{
+  color: rgb(179, 179, 179);
+  
+}
+.app__form input[type="submit"]{
+  border: none;
+  cursor: pointer;
+  padding: 0 30px;
+}
+.app__form input[type="submit"]:hover{
+  background-color: #cccccc;
+}
