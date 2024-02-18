@@ -33,7 +33,7 @@ body {
   border-radius: 5px;
   background-color:rgba(44, 62, 80,.4);
   height: 300px;
-  max-width: 600px;
+  max-width: 700px;
   color: white;
 }
 .app__title{
@@ -79,4 +79,21 @@ body {
 }
 .app__form input[type="submit"]:hover{
   background-color: #cccccc;
+}
+
+.app__output{
+  background-color: white;
+  padding: 20px;
+  color:grey;
+  border-radius: 4px;
+}
+.app__output>div{
+  margin-bottom: 10px;
+}
+.app__output-full a{
+color: grey;
+}
+.app__output-message{
+  font-size: 12px;
+  color: red;
 }

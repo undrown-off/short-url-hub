@@ -1,4 +1,5 @@
 <?php
+
 function find_by_short_link($short_link = ''): string | bool
 {
     // проверка полученной ссылки на существование в именах файлов
@@ -17,11 +18,14 @@ function find_by_short_link($short_link = ''): string | bool
     }
 }
 
-function find_by_full_link($full_link = ''): string | bool
+
+
+function find_by_full_link($full_link = ''): string | bool 
 {
     //     проверка полученной ссылки на существование в содержимом файлов
     $folderPath = "data";
     $files      = scandir($folderPath);
+    
 
     if ($full_link) {
         $search_content = function ($i = 0) use ($files, $full_link, $folderPath, &$search_content) {
@@ -33,9 +37,8 @@ function find_by_full_link($full_link = ''): string | bool
                     $fileContent = file_get_contents($filePath);
 
                     if ($fileContent === $full_link) {
-                        echo "Эта ссылка уже находится в базе </br>";
-                        print_r($filePath . ": " . $fileContent);
-                        return $filePath;
+                        
+                        return "Эта ссылка уже находится в базе -- filepath: {$filePath}</br> file-content:  {$fileContent}</br>";
                     } else {
                         $result = $search_content($i + 1);
 
@@ -63,6 +66,27 @@ function create_short_link(int $length): string
     return $shortLink;
 }
 
+
+function get_meaningful_shortlink(string $full_link, null | string $flag = null):string{
+    
+    $host = parse_url($full_link, PHP_URL_HOST);
+    $scheme = parse_url($full_link, PHP_URL_SCHEME);
+    if(str_contains($host,'www')){
+      $domain = explode(".",$host)[1];
+    }else{
+      $domain = explode(".",$host)[0];
+    }
+    $deleteVowels = "/(?<=[^aAEeIiUuOoYy])[aAEeIiUuOoYy]/";
+    $noVowelStr = preg_replace($deleteVowels,"",$domain);
+    if($flag == 'NO_SCHEME'){
+        return  "{$noVowelStr}";
+    }else{
+        return  "{$scheme}://{$noVowelStr}";
+    }
+  
+  }
+
+
 function save_link($short_link = '', $full_link = '')
 {
     // сохранение ссылки в файл
@@ -81,10 +105,8 @@ function get_full_link(): string
 {
     if (isset($_GET['link'])) {
         $input_full_link = $_GET['link'];
-
     }
     return $input_full_link;
-
 }
 
 function render_full(string $link): string
@@ -92,14 +114,63 @@ function render_full(string $link): string
     return "<a href=\"{$link}\" target=\"_blank\">{$link}</a><br />";
 }
 
+
 function render_short(string $link, string $visibleLink): string
 {
-    return "<a href=\"{$link}\" target=\"_blank\">https://{$visibleLink}</a><br />";
+    return "<a href=\"{$link}\" target=\"_blank\">{$visibleLink}</a><br/>";
 }
 
 // TODO
 
-echo "Your long link is: " . render_full(get_full_link());
-echo "Your short link is: " . render_short(get_full_link(), create_short_link(10)) . "<br />";
 
-save_link(create_short_link(10), get_full_link());
+$full_link = get_full_link();
+$output_messsage = find_by_full_link($full_link);
+$random_link = create_short_link(10);
+$short_link = get_meaningful_shortlink($full_link).$random_link;
+$short_link_no_scheme = get_meaningful_shortlink($full_link, "NO_SCHEME").$random_link;
+
+save_link($short_link_no_scheme, $full_link);
+
+?>
+
+
+<!-- ==================== PAGE ================= -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicons/favicon-16x16.png">
+    <link rel="stylesheet" href="assets/style/style.css">
+    <title>short-url-hub</title>
+</head>
+
+<body>
+    <div class="bg-name">short-url-hub</div>
+    <main class="app">
+        <div class="app__inner">
+            <div class="app__title">Ваша новая ссылка :</div>
+
+            <div class="app__output">
+                <div class="app__output-message">
+                    <?php echo $output_messsage; ?>
+                </div>
+                <div class="app__output-full">
+
+                    <?php echo "Your long link is: " . render_full($full_link );?>
+                </div>
+                <div class="app__output-short">
+                    <?php echo "Your short link is: " . render_short($full_link, $short_link) . "<br />";?>
+                </div>
+            </div>
+
+
+        </div>
+    </main>
+</body>
+
+</html>
