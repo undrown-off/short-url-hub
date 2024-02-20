@@ -58,5 +58,5 @@ function get_full_link() {
 $full_link = get_full_link();
 
 $short_link = find_by_full_link($full_link);
-
+echo "короткая ссылка $short_link";
 
