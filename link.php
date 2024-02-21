@@ -1,6 +1,6 @@
 <pre>
 <?php
-function find_by_short_link($short_link) {
+function find_by_short_link($short_link = '') {
     $folderPath = "data";
     $files = scandir($folderPath);
 
@@ -58,9 +58,9 @@ if ($existingShortLink) {
        echo "Ваша короткая ссылка: " . $existingShortLink;
     exit;
 }
-$shortLink = create_short_link();
-while (file_exists("data/{$shortLink}")) {
-    $shortLink = create_short_link();
+$short_link = create_short_link();
+while (find_by_short_link($short_link)) {
+    $short_link = create_short_link();
 }
-save_link($shortLink, $full_link);
-echo "Ваша короткая ссылка: " . $shortLink;
+save_link($short_link, $full_link);
+echo "Ваша короткая ссылка: " . $short_link;
