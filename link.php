@@ -25,8 +25,6 @@ function find_by_full_link($full_link = '') {
         if ($file !== '.' && $file !== '..') {
             $filePath = $folderPath . '/' . $file;
             $content = file_get_contents($filePath);
-//            echo "File: $filePath\n";
-//            echo "Content: $content";
             if (strpos($content, $full_link) !== false) {
                 return $file;
             }
@@ -37,12 +35,11 @@ function find_by_full_link($full_link = '') {
 
 function create_short_link() {
     $bytes = random_bytes(5);
-    $short_link = bin2hex($bytes);
-    return $short_link;
+    return bin2hex($bytes);
 }
 
 function save_link($short_link = '', $full_link = '') {
-    $filePath = "data/{$short_link}.txt";
+    $filePath = "data/{$short_link}";
     file_put_contents($filePath, $full_link, LOCK_EX);
 }
 
@@ -50,13 +47,20 @@ function save_link($short_link = '', $full_link = '') {
 
 
 function get_full_link() {
-    $full_link = isset($_GET['link']) ? trim($_GET['link']) : null;
-    return $full_link;
+    return isset($_GET['link']) ? trim($_GET['link']) : null;
 }
 
 // BEGIN
 $full_link = get_full_link();
+$existingShortLink = find_by_full_link($full_link);
 
-$short_link = find_by_full_link($full_link);
-echo "короткая ссылка $short_link";
-
+if ($existingShortLink) {
+       echo "Ваша короткая ссылка: " . $existingShortLink;
+    exit;
+}
+$shortLink = create_short_link();
+while (file_exists("data/{$shortLink}")) {
+    $shortLink = create_short_link();
+}
+save_link($shortLink, $full_link);
+echo "Ваша короткая ссылка: " . $shortLink;
