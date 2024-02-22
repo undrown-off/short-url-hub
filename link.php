@@ -1,43 +1,41 @@
 <?php
 
+define("SLASH", DIRECTORY_SEPARATOR);
+
+
 function find_by_short_link($short_link = ''): string | bool
 {
     // проверка полученной ссылки на существование в именах файлов
-    $folderPath = "data";
+
+    $folderPath = __DIR__ . SLASH . "data";
     $files      = scandir($folderPath);
     if ($short_link) {
         foreach ($files as $file) {
-            if ($file !== '.' && $file !== '..') {
                 if ($file == $short_link) {
-                    return $folderPath . '/' . $file;
+                    return $folderPath . SLASH . $file;
                 } else {
                     return false;
                 }
-            }
         }
     }
 }
 
-
-
-function find_by_full_link($full_link = ''): string | bool 
+function find_by_full_link($full_link = ''): string | bool
 {
     //     проверка полученной ссылки на существование в содержимом файлов
-    $folderPath = "data";
+    $folderPath = __DIR__ . SLASH . "data";
     $files      = scandir($folderPath);
-    
 
     if ($full_link) {
         $search_content = function ($i = 0) use ($files, $full_link, $folderPath, &$search_content) {
             for ($i; $i < count($files); $i++) {
                 $file = $files[$i];
-
-                if ($file !== '.' && $file !== '..') {
-                    $filePath    = $folderPath . '/' . $file;
+                
+                    $filePath    = $folderPath . SLASH . $file;
                     $fileContent = file_get_contents($filePath);
 
                     if ($fileContent === $full_link) {
-                        
+
                         return "Эта ссылка уже находится в базе -- filepath: {$filePath}</br> file-content:  {$fileContent}</br>";
                     } else {
                         $result = $search_content($i + 1);
@@ -46,7 +44,6 @@ function find_by_full_link($full_link = ''): string | bool
                             return $result;
                         }
                     }
-                }
             }
             return false;
         };
@@ -66,26 +63,25 @@ function create_short_link(int $length): string
     return $shortLink;
 }
 
+function get_meaningful_shortlink(string $full_link, null | string $flag = null): string
+{
 
-function get_meaningful_shortlink(string $full_link, null | string $flag = null):string{
-    
-    $host = parse_url($full_link, PHP_URL_HOST);
+    $host   = parse_url($full_link, PHP_URL_HOST);
     $scheme = parse_url($full_link, PHP_URL_SCHEME);
-    if(str_contains($host,'www')){
-      $domain = explode(".",$host)[1];
-    }else{
-      $domain = explode(".",$host)[0];
+    if (str_contains($host, 'www')) {
+        $domain = explode(".", $host)[1];
+    } else {
+        $domain = explode(".", $host)[0];
     }
     $deleteVowels = "/(?<=[^aAEeIiUuOoYy])[aAEeIiUuOoYy]/";
-    $noVowelStr = preg_replace($deleteVowels,"",$domain);
-    if($flag == 'NO_SCHEME'){
-        return  "{$noVowelStr}";
-    }else{
-        return  "{$scheme}://{$noVowelStr}";
+    $noVowelStr   = preg_replace($deleteVowels, "", $domain);
+    if ($flag == 'NO_SCHEME') {
+        return "{$noVowelStr}";
+    } else {
+        return "{$scheme}://{$noVowelStr}";
     }
-  
-  }
 
+}
 
 function save_link($short_link = '', $full_link = '')
 {
@@ -93,7 +89,7 @@ function save_link($short_link = '', $full_link = '')
 
     if ($short_link && $full_link) {
         if (!find_by_short_link($short_link) && !find_by_full_link($full_link)) {
-            $filePath = "data/{$short_link}.txt";
+            $filePath = __DIR__ . SLASH . "data/{$short_link}.txt";
             file_put_contents($filePath, $full_link, LOCK_EX);
         }
 
@@ -103,31 +99,31 @@ function save_link($short_link = '', $full_link = '')
 
 function get_full_link(): string
 {
-    if (isset($_GET['link'])) {
-        $input_full_link = $_GET['link'];
+    if (!isset($_GET['link'])) {
+        exit("link not found");
+    } else {
+        return $_GET['link'];
     }
-    return $input_full_link;
 }
+
 
 function render_full(string $link): string
 {
     return "<a href=\"{$link}\" target=\"_blank\">{$link}</a><br />";
 }
 
-
 function render_short(string $link, string $visibleLink): string
 {
     return "<a href=\"{$link}\" target=\"_blank\">{$visibleLink}</a><br/>";
 }
 
-// TODO
+// ==================== RUN ========================
 
-
-$full_link = get_full_link();
-$output_messsage = find_by_full_link($full_link);
-$random_link = create_short_link(10);
-$short_link = get_meaningful_shortlink($full_link).$random_link;
-$short_link_no_scheme = get_meaningful_shortlink($full_link, "NO_SCHEME").$random_link;
+$full_link            = get_full_link();
+$output_messsage      = find_by_full_link($full_link);
+$random_link          = create_short_link(10);
+$short_link           = get_meaningful_shortlink($full_link) . $random_link;
+$short_link_no_scheme = get_meaningful_shortlink($full_link, "NO_SCHEME") . $random_link;
 
 save_link($short_link_no_scheme, $full_link);
 
@@ -161,10 +157,10 @@ save_link($short_link_no_scheme, $full_link);
                 </div>
                 <div class="app__output-full">
 
-                    <?php echo "Your long link is: " . render_full($full_link );?>
+                    <?php echo "Your long link is: " . render_full($full_link); ?>
                 </div>
                 <div class="app__output-short">
-                    <?php echo "Your short link is: " . render_short($full_link, $short_link) . "<br />";?>
+                    <?php echo "Your short link is: " . render_short($full_link, $short_link) . "<br />"; ?>
                 </div>
             </div>
 
