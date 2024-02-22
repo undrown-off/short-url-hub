@@ -1,66 +1,38 @@
 <?php
 
 define("SLASH", DIRECTORY_SEPARATOR);
-// require_once("lib/Connection.php");
+require_once("lib/db.php");
 
 
-// echo "<pre>";
-// $data = db_fetchAll("SELECT * FROM users");
-// var_dump($data);
-// echo "</pre>";
-
-
-function find_by_short_link($short_link = ''): string | bool
+function find_by_short_link($short_link = ''): mixed
 {
-    // проверка полученной ссылки на существование в именах файлов
+    // проверка полученной ссылки на существование в базе данных
+   $data = db_fetchAll("SELECT * FROM short_url WHERE `short_url` = ?",[$short_link]);
 
-    $folderPath = __DIR__ . SLASH ."data";
-    $files      = scandir($folderPath);
-    if ($short_link) {
-        foreach ($files as $file) {
-            if ($file !== '.' && $file !== '..') {
-                if ($file == $short_link) {
-                    return $folderPath . '/' . $file;
-                } else {
-                    return false;
-                }
-            }
+   if(!$data){
+    return false;
+   }else{
+    return $data[0]["short_url"];
+   }
+}
+
+function find_by_full_link($full_link = ''): mixed
+{
+    //     проверка полученной ссылки на существование в БД
+    $data      = db_fetchAll("SELECT * FROM short_url WHERE `full_url` = ?",[$full_link]);
+
+    
+    if ($full_link) {
+        if (!$data) {
+            return false;
+        } else {
+            return "Эта ссылка уже находится в базе --  {$data[0]['short_url']}</br> Дата добавления:  {$data[0]['date_create']}</br>";
+           
         }
     }
 }
 
-function find_by_full_link($full_link = ''): string | bool
-{
-    //     проверка полученной ссылки на существование в содержимом файлов
-    $folderPath = __DIR__ . SLASH ."data";
-    $files      = scandir($folderPath);
-
-    if ($full_link) {
-        $search_content = function ($i = 0) use ($files, $full_link, $folderPath, &$search_content) {
-            for ($i; $i < count($files); $i++) {
-                $file = $files[$i];
-                if ($file !== '.' && $file !== '..') {
-                    $filePath    = $folderPath . SLASH . $file;
-                    $fileContent = file_get_contents($filePath);
-
-                    if ($fileContent === $full_link) {
-
-                        return "Эта ссылка уже находится в базе -- filepath: {$filePath}</br> file-content:  {$fileContent}</br>";
-                    } else {
-                        $result = $search_content($i + 1);
-
-                        if ($result !== false) {
-                            return $result;
-                        }
-                    }
-                }
-            }
-            return false;
-        };
-        return $search_content();
-    }
-    return false;
-}
+                
 
 function create_short_link(int $length): string
 {
@@ -83,7 +55,7 @@ function get_meaningful_shortlink(string $full_link, null | string $flag = null)
     } else {
         $domain = explode(".", $host)[0];
     }
-    $deleteVowels = "/(?<=[^aAEeIiUuOoYy])[aAEeIiUuOoYy]/";
+    $deleteVowels = "/(?<=[^aAEeIiUuOoYy])[aAEeIiUuOoYy]?/";
     $noVowelStr   = preg_replace($deleteVowels, "", $domain);
     if ($flag == 'NO_SCHEME') {
         return "{$noVowelStr}";
@@ -95,14 +67,13 @@ function get_meaningful_shortlink(string $full_link, null | string $flag = null)
 
 function save_link($short_link = '', $full_link = '')
 {
-    // сохранение ссылки в файл
+    // сохранение ссылки в БД
 
     if ($short_link && $full_link) {
         if (!find_by_short_link($short_link) && !find_by_full_link($full_link)) {
-            $filePath =  __DIR__ . SLASH . "data/{$short_link}.txt";
-            file_put_contents($filePath, $full_link, LOCK_EX);
+            $d = date("Y-m-d");
+            db_execute("INSERT INTO short_url (short_url,full_url,date_create) VALUES(?,?,?)",[$short_link, $full_link, $d ]);
         }
-
     }
 
 }
@@ -137,6 +108,10 @@ $short_link_no_scheme = get_meaningful_shortlink($full_link, "NO_SCHEME") . $ran
 
 save_link($short_link_no_scheme, $full_link);
 
+
+
+
+
 ?>
 
 
@@ -160,7 +135,10 @@ save_link($short_link_no_scheme, $full_link);
     <main class="app">
         <div class="app__inner">
             <div class="app__title">Ваша новая ссылка :</div>
-
+            <div class="app__home">
+                <a href="index.php">
+                    <? echo file_get_contents("./assets/images/home.svg") ?></a>
+            </div>
             <div class="app__output">
                 <div class="app__output-message">
                     <?php echo $output_messsage; ?>
@@ -170,7 +148,7 @@ save_link($short_link_no_scheme, $full_link);
                     <?php echo "Your long link is: " . render_full($full_link); ?>
                 </div>
                 <div class="app__output-short">
-                    <?php echo "Your short link is: " . render_short($full_link, $short_link) . "<br />"; ?>
+                    <?php echo "Your short link is: " . render_short($full_link, $short_link). "<br />"; ?>
                 </div>
             </div>
 
