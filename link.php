@@ -7,15 +7,17 @@ function find_by_short_link($short_link = ''): string | bool
 {
     // проверка полученной ссылки на существование в именах файлов
 
-    $folderPath = __DIR__ . SLASH . "data";
+    $folderPath = __DIR__ . SLASH ."data";
     $files      = scandir($folderPath);
     if ($short_link) {
         foreach ($files as $file) {
+            if ($file !== '.' && $file !== '..') {
                 if ($file == $short_link) {
-                    return $folderPath . SLASH . $file;
+                    return $folderPath . '/' . $file;
                 } else {
                     return false;
                 }
+            }
         }
     }
 }
@@ -23,14 +25,14 @@ function find_by_short_link($short_link = ''): string | bool
 function find_by_full_link($full_link = ''): string | bool
 {
     //     проверка полученной ссылки на существование в содержимом файлов
-    $folderPath = __DIR__ . SLASH . "data";
+    $folderPath = __DIR__ . SLASH ."data";
     $files      = scandir($folderPath);
 
     if ($full_link) {
         $search_content = function ($i = 0) use ($files, $full_link, $folderPath, &$search_content) {
             for ($i; $i < count($files); $i++) {
                 $file = $files[$i];
-                
+                if ($file !== '.' && $file !== '..') {
                     $filePath    = $folderPath . SLASH . $file;
                     $fileContent = file_get_contents($filePath);
 
@@ -44,6 +46,7 @@ function find_by_full_link($full_link = ''): string | bool
                             return $result;
                         }
                     }
+                }
             }
             return false;
         };
@@ -89,7 +92,7 @@ function save_link($short_link = '', $full_link = '')
 
     if ($short_link && $full_link) {
         if (!find_by_short_link($short_link) && !find_by_full_link($full_link)) {
-            $filePath = __DIR__ . SLASH . "data/{$short_link}.txt";
+            $filePath =  __DIR__ . SLASH . "data/{$short_link}.txt";
             file_put_contents($filePath, $full_link, LOCK_EX);
         }
 
