@@ -1,38 +1,3 @@
-<?php
-// require_once("lib/db.php");
-
-
-// // $test = db_execute("INSERT INTO short_url (`short_url`, `full_url`,`date_create`) VALUES ('https://www.dgfhhgfhfgh/', 'https://www.gismeteo.md/weather-tiraspol-4981/', NOW())");
-
-// $short_link = "https://www.gism";
-// $full_link  = "https://www.gismeteo.md/weather-tiraspol-4981/";
-// $d = date("Y-m-d");
-
-// db_execute("INSERT INTO short_url (short_url,full_url,date_create) VALUES(?,?,?)",[$short_link, $full_link, $d ]);
-
-
-// function find_by_short_link($short_link = ''):mixed
-// {
-
-// //    $data = db_fetchAll("SELECT * FROM short_url WHERE short_url = ?",[$short_link]);
-// $data = db_fetchAll("SELECT * FROM short_url");
-//    if(!$data){
-//     return false;
-//    }else{
-//     return $data;
-//     // return "Эта ссылка уже находится в базе -- : {$data[0]['short_url']}</br> Дата добавления: {$data[0]['date_create']}";
-//    }
-// }
-
-
-// echo "<pre>";
-
-// $sl = find_by_short_link("https://www.dgfhhgfhfgh/");
-// print_r($sl);
-// echo "</pre>";
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 

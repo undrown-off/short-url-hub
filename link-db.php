@@ -1,33 +1,38 @@
 <?php
 
-define("SLASH", DIRECTORY_SEPARATOR);
 require_once("lib/db.php");
 
 
-function find_by_short_link($short_link = ''): mixed
-{
-    // проверка полученной ссылки на существование в базе данных
-   $data = db_fetchAll("SELECT * FROM short_url WHERE `short_url` = ?",[$short_link]);
-
-   if(!$data){
-    return false;
-   }else{
-    return $data[0]["short_url"];
-   }
+function parse_data(array $data):mixed{
+    return [
+        "short_url" => $data[0]["short_url"],
+        "full_url" => $data[0]["full_url"],
+        "date_create" => $data[0]["date_create"],
+    ];
 }
 
-function find_by_full_link($full_link = ''): mixed
+function found_by_short_link($short_link = ''): array |bool
 {
-    //     проверка полученной ссылки на существование в БД
-    $data      = db_fetchAll("SELECT * FROM short_url WHERE `full_url` = ?",[$full_link]);
+   $data = db_fetchAll("SELECT * FROM short_url WHERE `short_url` = ?",[$short_link]);
+    if($short_link){
+        if(!$data){
+            return false;
+           }else{
+            return parse_data($data);
+           }
+    }
+   
+}
 
+function found_by_full_link($full_link = ''): array |bool
+{
+    $data = db_fetchAll("SELECT * FROM short_url WHERE `full_url` = ?",[$full_link]);
     
     if ($full_link) {
         if (!$data) {
             return false;
         } else {
-            return "Эта ссылка уже находится в базе --  {$data[0]['short_url']}</br> Дата добавления:  {$data[0]['date_create']}</br>";
-           
+            return parse_data($data);
         }
     }
 }
@@ -36,7 +41,6 @@ function find_by_full_link($full_link = ''): mixed
 
 function create_short_link(int $length): string
 {
-    // создание короткой ссылки
     $random_bytes = random_bytes(5);
     $hex_link     = bin2hex($random_bytes);
     $hash         = hash('sha256', $hex_link);
@@ -67,15 +71,12 @@ function get_meaningful_shortlink(string $full_link, null | string $flag = null)
 
 function save_link($short_link = '', $full_link = '')
 {
-    // сохранение ссылки в БД
-
     if ($short_link && $full_link) {
-        if (!find_by_short_link($short_link) && !find_by_full_link($full_link)) {
+        if (!found_by_short_link($short_link) && !found_by_full_link($full_link)) {
             $d = date("Y-m-d");
             db_execute("INSERT INTO short_url (short_url,full_url,date_create) VALUES(?,?,?)",[$short_link, $full_link, $d ]);
         }
     }
-
 }
 
 function get_full_link(): string
@@ -88,32 +89,40 @@ function get_full_link(): string
 }
 
 
-function render_full(string $link): string
+function render_full(string $full_link): string
 {
-    return "<a href=\"{$link}\" target=\"_blank\">{$link}</a><br />";
+    return "<a href=\"{$full_link}\" target=\"_blank\">{$full_link}</a><br />";
 }
 
-function render_short(string $link, string $visibleLink): string
+function render_short(string $full_link, string $visibleLink): string
 {
-    return "<a href=\"{$link}\" target=\"_blank\">{$visibleLink}</a><br/>";
+    return "<a href=\"{$full_link}\" target=\"_blank\">{$visibleLink}</a><br/>";
+}
+
+function render_redirect(string $short_link_no_scheme){
+    return "<a href=\"https://{$_SERVER["SERVER_NAME"]}/go.php?{$short_link_no_scheme}\">{$short_link_no_scheme}</a><br/>";
 }
 
 // ==================== RUN ========================
 
-$full_link            = get_full_link();
-$output_messsage      = find_by_full_link($full_link);
-$random_link          = create_short_link(10);
-$short_link           = get_meaningful_shortlink($full_link) . $random_link;
-$short_link_no_scheme = get_meaningful_shortlink($full_link, "NO_SCHEME") . $random_link;
+$full_link = get_full_link();
+
+$found_link = found_by_full_link($full_link)?? false;
+
+$output_messsage = $found_link ? "Эта ссылка уже находится в базе -- {$found_link['short_url']}</br> Дата
+добавления: {$found_link['date_create']}</br>" : false;
+
+$random_link = create_short_link(10);
+
+$short_link = $found_link["short_url"] ?? get_meaningful_shortlink($full_link) . $random_link ;
+
+$short_link_no_scheme = $found_link["short_url"] ?? get_meaningful_shortlink($full_link, "NO_SCHEME") . $random_link;
+
 
 save_link($short_link_no_scheme, $full_link);
 
 
-
-
-
 ?>
-
 
 <!-- ==================== PAGE ================= -->
 
@@ -148,11 +157,15 @@ save_link($short_link_no_scheme, $full_link);
                     <?php echo "Your long link is: " . render_full($full_link); ?>
                 </div>
                 <div class="app__output-short">
-                    <?php echo "Your short link is: " . render_short($full_link, $short_link). "<br />"; ?>
+                    <?php 
+                    // echo "Your short link is: " . render_short($full_link, $short_link) . "<br />"; 
+                    ?>
+                    <?php echo "Your short link is: " . render_redirect($short_link_no_scheme) . "<br />"; 
+                    echo $short_link_no_scheme;
+                    ?>
+
                 </div>
             </div>
-
-
         </div>
     </main>
 </body>

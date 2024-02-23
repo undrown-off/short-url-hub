@@ -1,14 +1,6 @@
 <?php
 
 define("SLASH", DIRECTORY_SEPARATOR);
-// require_once("lib/Connection.php");
-
-
-// echo "<pre>";
-// $data = db_fetchAll("SELECT * FROM users");
-// var_dump($data);
-// echo "</pre>";
-
 
 function find_by_short_link($short_link = ''): string | bool
 {
@@ -117,14 +109,17 @@ function get_full_link(): string
 }
 
 
-function render_full(string $link): string
+function render_full(string $full_link): string
 {
-    return "<a href=\"{$link}\" target=\"_blank\">{$link}</a><br />";
+    return "<a href=\"{$full_link}\" target=\"_blank\">{$full_link}</a><br />";
 }
 
-function render_short(string $link, string $visibleLink): string
+function render_short(string $full_link, string $visibleLink): string
 {
-    return "<a href=\"{$link}\" target=\"_blank\">{$visibleLink}</a><br/>";
+    return "<a href=\"{$full_link}\" target=\"_blank\">{$visibleLink}</a><br/>";
+}
+function render_redirect(string $full_link, string $visibleLink){
+    return "<a href=\"https://{$_SERVER["SERVER_NAME"]}/go.php?{$full_link}\">{$visibleLink}</a><br/>";
 }
 
 // ==================== RUN ========================
@@ -138,7 +133,6 @@ $short_link_no_scheme = get_meaningful_shortlink($full_link, "NO_SCHEME") . $ran
 save_link($short_link_no_scheme, $full_link);
 
 ?>
-
 
 <!-- ==================== PAGE ================= -->
 
@@ -170,11 +164,12 @@ save_link($short_link_no_scheme, $full_link);
                     <?php echo "Your long link is: " . render_full($full_link); ?>
                 </div>
                 <div class="app__output-short">
-                    <?php echo "Your short link is: " . render_short($full_link, $short_link) . "<br />"; ?>
+                    <?php 
+                    // echo "Your short link is: " . render_short($full_link, $short_link) . "<br />"; 
+                    ?>
+                    <?php echo "Your short link is: " . render_redirect($full_link,$short_link) . "<br />"; ?>
                 </div>
             </div>
-
-
         </div>
     </main>
 </body>
