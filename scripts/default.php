@@ -17,7 +17,7 @@
     <blockquote>
         Введите свою ссылку ниже и мы создадим для вас короткую версию, которую легко передать другу:
     </blockquote>
-    <form method="get" action="link.php">
+    <form method="get" action="/create">
         <div class="form-group">
             <label for="link">Введите ссылку</label>
             <input type="text" class="form-control" name="link" id="link" placeholder="https://domain.com"

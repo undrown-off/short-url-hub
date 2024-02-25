@@ -1,8 +1,11 @@
 <?php
 
-/****************************/
-/* Настройки подключания    */
-/****************************/
+/*******************************/
+/* библиотека для работы с БД */
+/******************************/
+
+
+/* Настройки подключения    */
 
 const DB_NAME = "my_db";
 const DB_HOST = "localhost";
@@ -10,9 +13,7 @@ const DB_USER = "root";
 const DB_PASS = "";
 
 
-/****************************/
 /* Функции для работы с БД */
-/***************************/
 
 /**
  * @return PDO
@@ -98,4 +99,15 @@ function db_fetchAll($query, $arguments = [])
 {
     $stmt = db_execute($query, $arguments);
     return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+}
+
+/**
+ * @param $query
+ * @param $arguments
+ * @return array|false
+ */
+function db_fetch($query, $arguments = [])
+{
+    $stmt = db_execute($query, $arguments);
+    return $stmt->fetch(\PDO::FETCH_ASSOC);
 }
