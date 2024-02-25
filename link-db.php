@@ -3,14 +3,6 @@
 require_once("lib/db.php");
 
 
-function parse_data(array $data):mixed{
-    return [
-        "short_url" => $data[0]["short_url"],
-        "full_url" => $data[0]["full_url"],
-        "date_create" => $data[0]["date_create"],
-    ];
-}
-
 function found_by_short_link($short_link = ''): array |bool
 {
    $data = db_fetchAll("SELECT * FROM short_url WHERE `short_url` = ?",[$short_link]);
@@ -18,7 +10,7 @@ function found_by_short_link($short_link = ''): array |bool
         if(!$data){
             return false;
            }else{
-            return parse_data($data);
+            return $data[0];
            }
     }
    
@@ -32,13 +24,12 @@ function found_by_full_link($full_link = ''): array |bool
         if (!$data) {
             return false;
         } else {
-            return parse_data($data);
+            return $data[0];
         }
     }
 }
 
                 
-
 function create_short_link(int $length): string
 {
     $random_bytes = random_bytes(5);
@@ -100,14 +91,14 @@ function render_short(string $full_link, string $visibleLink): string
 }
 
 function render_redirect(string $short_link_no_scheme){
-    return "<a href=\"https://{$_SERVER["SERVER_NAME"]}/go.php?{$short_link_no_scheme}\">{$short_link_no_scheme}</a><br/>";
+    return "<a href=\"https://{$_SERVER["SERVER_NAME"]}/go.php?{$short_link_no_scheme}\" target=\"_blank\">{$short_link_no_scheme}</a><br/>";
 }
 
 // ==================== RUN ========================
 
 $full_link = get_full_link();
 
-$found_link = found_by_full_link($full_link)?? false;
+$found_link = found_by_full_link($full_link);
 
 $output_messsage = $found_link ? "Эта ссылка уже находится в базе -- {$found_link['short_url']}</br> Дата
 добавления: {$found_link['date_create']}</br>" : false;
@@ -118,9 +109,7 @@ $short_link = $found_link["short_url"] ?? get_meaningful_shortlink($full_link) .
 
 $short_link_no_scheme = $found_link["short_url"] ?? get_meaningful_shortlink($full_link, "NO_SCHEME") . $random_link;
 
-
 save_link($short_link_no_scheme, $full_link);
-
 
 ?>
 
@@ -157,13 +146,8 @@ save_link($short_link_no_scheme, $full_link);
                     <?php echo "Your long link is: " . render_full($full_link); ?>
                 </div>
                 <div class="app__output-short">
-                    <?php 
-                    // echo "Your short link is: " . render_short($full_link, $short_link) . "<br />"; 
-                    ?>
                     <?php echo "Your short link is: " . render_redirect($short_link_no_scheme) . "<br />"; 
-                    echo $short_link_no_scheme;
                     ?>
-
                 </div>
             </div>
         </div>
