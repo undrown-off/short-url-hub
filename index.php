@@ -23,7 +23,7 @@
 <body>
 <div class="container">
 <p>Введите свою ссылку ниже и мы создадим для вас короткую версию, которую легко передать другу</p>
-<form action="link.php" method="get" onsubmit="return validateForm()">
+<form action="link-db.php" method="get" onsubmit="return validateForm()">
     <form>
         <label for="textInput">Введи ссылку:</label>
         <input type="text" id="textInput" name="link">

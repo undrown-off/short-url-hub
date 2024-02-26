@@ -9,13 +9,9 @@ require_once ("lib/db.php");
  */
 function find_short_link($short_link = '')
 {
-    $data = db_fetchAll("SELECT short_url FROM short_url" );
-    foreach ($data as $item) {
-        if ($item['short_url'] == $short_link) {
-            return $item['short_url'];
-        }
-    }
-
+    if ($data = db_fetchAll("SELECT short_url FROM short_url WHERE short_url=?", [$short_link])) {
+        return $data['short_url'];
+}
     return false;
 }
 
@@ -25,11 +21,8 @@ function find_short_link($short_link = '')
  */
 function find_full_link($full_link = '')
 {
-    $data = db_fetchAll("SELECT short_url, full_url FROM short_url");
-    foreach ($data as $item) {
-        if ($item['full_url'] == $full_link) {
-            return $item['short_url'];
-        }
+    if ($data = db_fetchAll("SELECT short_url FROM short_url WHERE full_url=?", [$full_link])) {
+        return $data [0]["short_url"];
     }
     return false;
 }
@@ -39,11 +32,11 @@ function find_full_link($full_link = '')
  */
 function create_short_link()
 {
-    $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';
-    return substr(str_shuffle($permitted_chars), 0, 10);
+    $bytes = random_bytes(5);
+    return bin2hex($bytes);
 }
 
-function save_link($short_link = '', $full_link = '', $datecreate = '')
+function save_link($short_link = '', $full_link = '')
 {
     db_execute("INSERT INTO short_url (short_url, full_url, date_create)
                       VALUES (?, ?, ?)", [$short_link, $full_link, time()]);
@@ -61,7 +54,7 @@ if (!$short_link) {
     for (; ;) {
         $short_link = create_short_link();
         if (!find_short_link($short_link)) {
-            save_link($short_link, $input_data, time());
+            save_link($short_link, $input_data);
             break;
         }
     }
@@ -83,7 +76,7 @@ if (!$short_link) {
 
 <body>
 <div class="container">
-    <h1>Your link is:</h1>
+    <h1>Ваша короткая ссылка</h1>
     <?="https://{$_SERVER["SERVER_NAME"]}/go.php?{$short_link}"; ?>
 </div>
 </body>
