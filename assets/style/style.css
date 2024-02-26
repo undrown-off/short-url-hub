@@ -33,7 +33,7 @@ body {
   border-radius: 5px;
   background-color:rgba(44, 62, 80,.4);
   height: 300px;
-  max-width: 600px;
+  max-width: 700px;
   color: white;
 }
 .app__title{
@@ -45,6 +45,7 @@ body {
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+  position: relative;
 }
 .app__form {
   padding: 40px 0;
@@ -79,4 +80,46 @@ body {
 }
 .app__form input[type="submit"]:hover{
   background-color: #cccccc;
+}
+
+.app__output{
+  background-color: white;
+  padding: 20px;
+  color:grey;
+  border-radius: 4px;
+}
+.app__output>div{
+  margin-bottom: 10px;
+}
+.app__output-full{
+  word-break: break-all;
+  }
+.app__output-full a{
+color: grey;
+}
+.app__output-message{
+  font-size: 12px;
+  color: red;
+}
+.app__home{
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+.svg-path{
+  fill:white;
+}
+
+.svg-img{
+  display: block;
+  height: 25px;
+  width:  25px;
+
+}
+.svg-img:hover .svg-path{
+  fill: rgb(222, 255, 35);
 }

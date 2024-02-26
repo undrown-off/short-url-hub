@@ -15,15 +15,15 @@
     <div class="bg-name">short-url-hub</div>
     <main class="app">
         <div class="app__inner">
+
             <div class="app__title">Введите свою ссылку ниже -
                 и мы создадим для вас короткую версию,
                 которую легко передать другу:</div>
 
-            <form class="app__form" action="link.php">
+            <form class="app__form" action="link-db.php">
                 <input type="url" name="link" placeholder="https//example.com" required>
-                <input type="submit" value="send">
+                <input type="submit" value="Создать ссылку">
             </form>
-
 
         </div>
     </main>
