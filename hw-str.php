@@ -3,7 +3,7 @@
 
 // 1. Дана строка, содержащая полное имя файла (например, 'c:\WebServers\home\testsite\www\myfile.txt'). Выделите из этой строки имя файла без расширения.
 
-echo basename('c:\WebServers\home\testsite\www\myfile.txt',".txt");
+echo basename('c:\WebServers\home\testsite\www\myfile.txt',".txt").'<br />';
 
 // 2. Дан текст. Найдите в нем все числа, окруженные пробелами, и добавьте перед ними '<' и после них '>'.
 
@@ -71,7 +71,7 @@ function longest_compound_str(array $words): mixed
     $core_words = array_diff($words, $compound_words);
 
     $valid_compounds = [];
-    foreach ($compound_words as $compound) {
+    foreach ($compound_words as $index => $compound) {
         foreach ($core_words as $core) {
             if (str_contains($compound, $core)) {
                 $compound = str_replace($core, ".", $compound);
