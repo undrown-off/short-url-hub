@@ -98,3 +98,13 @@ function db_fetchAll($query, $arguments = [])
     $stmt = db_execute($query, $arguments);
     return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 }
+/**
+ * @param $query
+ * @param $arguments
+ * @return array|false
+ */
+function db_fetch($query, $arguments = [])
+{
+    $stmt = db_execute($query, $arguments);
+    return $stmt->fetch(\PDO::FETCH_ASSOC);
+}

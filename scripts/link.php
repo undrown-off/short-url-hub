@@ -2,7 +2,7 @@
 
 define("SLASH", DIRECTORY_SEPARATOR);
 
-function find_by_short_link($short_link = ''): string | bool
+function find_by_short_link_fs($short_link = ''): string | bool
 {
     // проверка полученной ссылки на существование в именах файлов
 
@@ -21,7 +21,7 @@ function find_by_short_link($short_link = ''): string | bool
     }
 }
 
-function find_by_full_link($full_link = ''): string | bool
+function find_by_full_link_fs($full_link = ''): string | bool
 {
     //     проверка полученной ссылки на существование в содержимом файлов
     $folderPath = __DIR__ . SLASH ."data";
@@ -54,7 +54,7 @@ function find_by_full_link($full_link = ''): string | bool
     return false;
 }
 
-function create_short_link(int $length): string
+function create_short_link_fs(int $length): string
 {
     // создание короткой ссылки
     $random_bytes = random_bytes(5);
@@ -65,7 +65,7 @@ function create_short_link(int $length): string
     return $shortLink;
 }
 
-function get_meaningful_shortlink(string $full_link, null | string $flag = null): string
+function get_meaningful_shortlink_fs(string $full_link, null | string $flag = null): string
 {
 
     $host   = parse_url($full_link, PHP_URL_HOST);
@@ -85,12 +85,12 @@ function get_meaningful_shortlink(string $full_link, null | string $flag = null)
 
 }
 
-function save_link($short_link = '', $full_link = '')
+function save_link_fs($short_link = '', $full_link = '')
 {
     // сохранение ссылки в файл
 
     if ($short_link && $full_link) {
-        if (!find_by_short_link($short_link) && !find_by_full_link($full_link)) {
+        if (!find_by_short_link_fs($short_link) && !find_by_full_link_fs($full_link)) {
             $filePath =  __DIR__ . SLASH . "data/{$short_link}.txt";
             file_put_contents($filePath, $full_link, LOCK_EX);
         }
@@ -99,7 +99,7 @@ function save_link($short_link = '', $full_link = '')
 
 }
 
-function get_full_link(): string
+function get_full_link_fs(): string
 {
     if (!isset($_GET['link'])) {
         exit("link not found");
@@ -109,28 +109,28 @@ function get_full_link(): string
 }
 
 
-function render_full(string $full_link): string
+function render_full_fs(string $full_link): string
 {
     return "<a href=\"{$full_link}\" target=\"_blank\">{$full_link}</a><br />";
 }
 
-function render_short(string $full_link, string $visibleLink): string
+function render_short_fs(string $full_link, string $visibleLink): string
 {
     return "<a href=\"{$full_link}\" target=\"_blank\">{$visibleLink}</a><br/>";
 }
-function render_redirect(string $full_link, string $visibleLink){
+function render_redirect_fs(string $full_link, string $visibleLink){
     return "<a href=\"https://{$_SERVER["SERVER_NAME"]}/go.php?{$full_link}\">{$visibleLink}</a><br/>";
 }
 
 // ==================== RUN ========================
 
-$full_link            = get_full_link();
-$output_messsage      = find_by_full_link($full_link);
-$random_link          = create_short_link(10);
-$short_link           = get_meaningful_shortlink($full_link) . $random_link;
-$short_link_no_scheme = get_meaningful_shortlink($full_link, "NO_SCHEME") . $random_link;
+$full_link            = get_full_link_fs();
+$output_messsage      = find_by_full_link_fs($full_link);
+$random_link          = create_short_link_fs(10);
+$short_link           = get_meaningful_shortlink_fs($full_link) . $random_link;
+$short_link_no_scheme = get_meaningful_shortlink_fs($full_link, "NO_SCHEME") . $random_link;
 
-save_link($short_link_no_scheme, $full_link);
+save_link_fs($short_link_no_scheme, $full_link);
 
 ?>
 
@@ -161,13 +161,13 @@ save_link($short_link_no_scheme, $full_link);
                 </div>
                 <div class="app__output-full">
 
-                    <?php echo "Your long link is: " . render_full($full_link); ?>
+                    <?php echo "Your long link is: " . render_full_fs($full_link); ?>
                 </div>
                 <div class="app__output-short">
                     <?php 
                     // echo "Your short link is: " . render_short($full_link, $short_link) . "<br />"; 
                     ?>
-                    <?php echo "Your short link is: " . render_redirect($full_link,$short_link) . "<br />"; ?>
+                    <?php echo "Your short link is: " . render_redirect_fs($full_link,$short_link) . "<br />"; ?>
                 </div>
             </div>
         </div>
