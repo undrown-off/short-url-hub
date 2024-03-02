@@ -32,15 +32,33 @@ if ($parse_url["path"]) {
     die();
 }
 
-/* подключение библиотек */
-require_once(DIR_ROOT . "lib" . DS . "error.php");
-require_once(DIR_ROOT . "lib" . DS . "db.php");
-require_once(DIR_ROOT . "lib" . DS . "url.php");
+
+function autoloader($classname = "")
+{
+    if (file_exists(DIR_ROOT . "lib" . DS . $classname . ".php")) {
+        require_once(DIR_ROOT . "lib" . DS . $classname . ".php");
+    } else {
+        die("Class {$classname} not found");
+    }
+}
+
+spl_autoload_register("autoloader");
 
 
 /* подключение скрипта */
 if (file_exists(DIR_ROOT . "scripts" . DS . $file)) {
     require_once(DIR_ROOT . "scripts" . DS . $file);
 } else {
-    error_500("file not found: {$file}");
+   Errors::code_500("file not found: {$file}");
 }
+
+
+/*
+ *  затраты ресурсов
+ *
+echo "<pre>";
+print_r(get_included_files());
+echo memory_get_peak_usage() / 1024;
+echo " KB";
+echo "</pre>";
+*/

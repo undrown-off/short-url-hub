@@ -1,25 +1,28 @@
 <?php
+
 if (isset($parse_url["query"])) {
     parse_str($parse_url["query"], $parse_str);
 } else {
-    error_500("query not found");
+    Errors::code_500("query not found");
 }
 
 if (!isset($parse_str['link'])) {
-    error_500("link not found");
+    Errors::code_500("link not found");
 }
 
 if (!is_string($parse_str['link'])) {
-    error_500("link is not string");
+    Errors::code_500("link is not string");
 }
 
+$url = new Url();
+
 $input_data = $parse_str['link'];
-$short_link = find_full_link($input_data);
+$short_link = $url->find_full_link($input_data);
 if (!$short_link) {
     for (; ;) {
-        $short_link = create_short_link();
-        if (!find_short_link($short_link)) {
-            save_link($short_link, $input_data);
+        $short_link = $url->create_short_link();
+        if (!$url->find_short_link($short_link)) {
+            $url->save_link($short_link, $input_data);
             break;
         }
     }
