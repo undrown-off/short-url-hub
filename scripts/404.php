@@ -1,2 +1,2 @@
 <?php
-error_404("Page not found");
+Errors::code_404("Page not found");

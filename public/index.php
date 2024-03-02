@@ -32,15 +32,23 @@ if ($parse_url["path"]) {
     die();
 }
 
-/* подключение библиотек */
-require_once(DIR_ROOT . "lib" . DS . "error.php");
-require_once(DIR_ROOT . "lib" . DS . "db.php");
-require_once(DIR_ROOT . "lib" . DS . "url.php");
+spl_autoload_register("indexAutoloader");
+
+function indexAutoloader($className)
+{
+    $classDir = DIR_ROOT . 'lib' . DS;
+    $classFile = $classDir . $className . '.php';
+
+    if(file_exists($classFile)){
+        require_once($classFile);
+    }else{
+        Errors::code_500("Class file not found for: {$className}");
+    }
+}
 
 
-/* подключение скрипта */
 if (file_exists(DIR_ROOT . "scripts" . DS . $file)) {
-    require_once(DIR_ROOT . "scripts" . DS . $file);
+    require_once DIR_ROOT . "scripts" . DS . $file;
 } else {
-    error_500("file not found: {$file}");
+    Errors::code_500("file not found: {$file}");
 }

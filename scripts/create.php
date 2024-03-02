@@ -2,33 +2,35 @@
 if (isset($parse_url["query"])) {
     parse_str($parse_url["query"], $parse_str);
 } else {
-    error_500("query not found");
+    Errors::code_500("query not found");
 }
 
 if (!isset($parse_str['link'])) {
-    error_500("link not found");
+  Errors::code_500("link not found");
 }
 
 if (!is_string($parse_str['link'])) {
-    error_500("link is not string");
+  Errors::code_500("link is not string");
 }
 
 // ==================== RUN ========================
 
+$url = new Url();
+
 $full_link = $parse_str['link'];
-$found_link = found_by_full_link($full_link);
+$found_link = $url->found_by_full_link($full_link);
 
 
 $output_messsage = $found_link ? "Эта ссылка уже находится в базе -- {$found_link['short_url']}</br> Дата
 добавления: {$found_link['date_create']}</br>" : false;
 
-$random_link = create_short_link(10);
+$random_link = $url->create_short_link(10);
 
-$short_link = $found_link["short_url"] ?? get_meaningful_shortlink($full_link) . $random_link ;
+$short_link = $found_link["short_url"] ?? $url->get_meaningful_shortlink($full_link) . $random_link ;
 
-$short_link_no_scheme = $found_link["short_url"] ?? get_meaningful_shortlink($full_link, "NO_SCHEME") . $random_link;
+$short_link_no_scheme = $found_link["short_url"] ?? $url->get_meaningful_shortlink($full_link, "NO_SCHEME") . $random_link;
 
-save_link($short_link_no_scheme, $full_link);
+$url->save_link($short_link_no_scheme, $full_link);
 
 
 ?>
@@ -62,10 +64,10 @@ save_link($short_link_no_scheme, $full_link);
         </div>
         <div class="app__output-full">
 
-          <?php echo "Your long link is: " . render_full($full_link); ?>
+          <?php echo "Your long link is: " . $url->render_full($full_link); ?>
         </div>
         <div class="app__output-short">
-          <?php echo "Your short link is: " . render_redirect($short_link_no_scheme) . "<br />"; 
+          <?php echo "Your short link is: " . $url->render_redirect($short_link_no_scheme) . "<br />"; 
                     ?>
         </div>
       </div>
