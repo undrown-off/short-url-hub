@@ -32,7 +32,7 @@ if ($parse_url["path"]) {
     die();
 }
 
-spl_autoload_register("indexAutoloader");
+
 
 function indexAutoloader($className)
 {
@@ -42,13 +42,23 @@ function indexAutoloader($className)
     if(file_exists($classFile)){
         require_once($classFile);
     }else{
-        Errors::code_500("Class file not found for: {$className}");
+        throw new Exception("Class file not found for: {$className}");
     }
 }
-
+spl_autoload_register("indexAutoloader");
 
 if (file_exists(DIR_ROOT . "scripts" . DS . $file)) {
     require_once DIR_ROOT . "scripts" . DS . $file;
 } else {
     Errors::code_500("file not found: {$file}");
 }
+
+/*
+ *  затраты ресурсов
+ *
+echo "<pre>";
+print_r(get_included_files());
+echo memory_get_peak_usage() / 1024;
+echo " KB";
+echo "</pre>";
+*/
