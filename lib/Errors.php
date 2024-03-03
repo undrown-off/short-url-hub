@@ -1,21 +1,25 @@
 <?php
-
-
-class Errors{
-
-public static function __callStatic($name, $message){
-
-}
-
-
- private static function code_404($message = "Page not found"){
-    http_response_code(404);
-    exit($message);
-}
-
-
-private static function code_500($message = "Internal server error"){
-    http_response_code(500);
-    exit($message);
-}
-}
+ class Errors
+ {
+ 
+     private static $allow_codes = [404, 500];
+ 
+     private static function error_x($code = 404, $message = "Page not found")
+     {
+         http_response_code($code);
+         exit($message);
+     }
+ 
+    
+     public static function __callStatic($name = "", $args = [])
+     {
+         $code = str_replace("code_", "", $name);
+ 
+         if (in_array($code, self::$allow_codes) && !empty($args)) {
+             self::error_x($code, $args[0]);
+         } else {
+             exit("__callStatic method not allowed");
+         }
+     }
+ 
+ }

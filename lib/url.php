@@ -2,15 +2,9 @@
 
 class Url {
 
-private $db;
-
- public function __construct(){
-    $this->db = new DbQuery();
- }
-
     public function found_by_short_link($short_link = ''): array |bool
     {
-       $data = $this->db->fetch("SELECT * FROM short_url WHERE `short_url` = ?",[$short_link]);
+       $data = DbQuery::fetch("SELECT * FROM short_url WHERE `short_url` = ?",[$short_link]);
         if($short_link){
             if(!$data){
                 return false;
@@ -23,7 +17,7 @@ private $db;
     
     public function found_by_full_link($full_link = ''): array |bool
     {
-        $data = $this->db->fetch("SELECT * FROM short_url WHERE `full_url` = ?",[$full_link]);
+        $data = DbQuery::fetch("SELECT * FROM short_url WHERE `full_url` = ?",[$full_link]);
         
         if ($full_link) {
             if (!$data) {
@@ -70,7 +64,7 @@ private $db;
         if ($short_link && $full_link) {
             if (!$this->found_by_short_link($short_link) && !$this->found_by_full_link($full_link)) {
                 $d = date("Y-m-d");
-                $this->db->execute("INSERT INTO short_url (short_url,full_url,date_create) VALUES(?,?,?)",[$short_link, $full_link, $d ]);
+                DbQuery::execute("INSERT INTO short_url (short_url,full_url,date_create) VALUES(?,?,?)",[$short_link, $full_link, $d ]);
             }
         }
     }
