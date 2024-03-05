@@ -1,6 +1,7 @@
 <?php
 
-require_once ("lib/db.php");
+require_once ("lib/DbBase.php");
+require_once ("lib/DbQuery.php");
 
 
 /**
