@@ -1,3 +1,10 @@
+<?php 
+$url = new Url();
+
+$short_links_ip  = $url->find_short_links_by_ip($_SERVER['REMOTE_ADDR']);
+$short_links_sid = $url->find_short_links_by_sid(session_id());
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,6 +31,44 @@
         <input type="url" name="link" placeholder="https://example.com" required>
         <input type="submit" value="Создать ссылку">
       </form>
+
+      <div class="app__output-links-ip">
+        <div class="app__output-links-ip-title">С этого ip адреса были запрошены следующие ссылки:</div>
+        <div class="app__output-links-ip-links">
+          <?php foreach ($short_links_ip as $short_link) {
+                $short_link_rendered = $url->render_short($short_link['full_url'],$short_link['short_url']);
+                $short_link_ip = $short_link['ip_address'];
+                $date = $short_link['date_create'];
+                echo "<div class='app__output-links-ip-link'>
+                      <div class='app__output-links-ip-shortlink'>{$short_link_rendered}
+                      </div>
+                      <div class='app__output-links-ip'>{$short_link['ip_address']}</div>
+                      <div class='app__output-links-ip-date'>{$date}</div>
+                      </div>";
+                }
+                ?>
+
+        </div>
+      </div>
+      <div class="app__output-links-sid">
+        <div class="app__output-links-sid-title">Для текущей сессии были запрошены следующие ссылки:</div>
+        <div class='app__output-links-sid-links'>
+          <?php
+              foreach ($short_links_sid as $short_link) {
+                  $short_link_rendered = $url->render_short($short_link['full_url'],$short_link['short_url']);
+                  $short_link_sid = $short_link['s_id'];
+                  $date = $short_link['date_create'];
+                  echo "<div class='app__output-links-sid-link'>
+                  <div class='app__output-links-sid-shortlink'>{$short_link_rendered}</div>
+                  <div class='app__output-links-sid'>{$short_link_sid}</div>
+                  <div class='app__output-links-sid-date'>{$date}</div>
+                  
+                  </div>";
+                }
+                ?>
+
+        </div>
+      </div>
 
     </div>
   </main>

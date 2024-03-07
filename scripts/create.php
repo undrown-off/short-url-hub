@@ -6,33 +6,33 @@ if (isset($parse_url["query"])) {
 }
 
 if (!isset($parse_str['link'])) {
-  Errors::code_500("link not found");
+    Errors::code_500("link not found");
 }
 
 if (!is_string($parse_str['link'])) {
-  Errors::code_500("link is not string");
+    Errors::code_500("link is not string");
 }
 
 // ==================== RUN ========================
 
 $url = new Url();
 
-$full_link = $parse_str['link'];
+$full_link  = $parse_str['link'];
 $found_link = $url->found_by_full_link($full_link);
-
 
 $output_messsage = $found_link ? "Эта ссылка уже находится в базе -- {$found_link['short_url']}</br> Дата
 добавления: {$found_link['date_create']}</br>" : false;
 
 $random_link = $url->create_short_link(10);
 
-$short_link = $found_link["short_url"] ?? $url->get_meaningful_shortlink($full_link) . $random_link ;
+$short_link = $found_link["short_url"] ?? $url->get_meaningful_shortlink($full_link) . $random_link;
 
 $short_link_no_scheme = $found_link["short_url"] ?? $url->get_meaningful_shortlink($full_link, "NO_SCHEME") . $random_link;
 
 $url->save_link($short_link_no_scheme, $full_link);
 
-
+$short_links_ip  = $url->find_short_links_by_ip($_SERVER['REMOTE_ADDR']);
+$short_links_sid = $url->find_short_links_by_sid(session_id());
 ?>
 
 
@@ -56,7 +56,7 @@ $url->save_link($short_link_no_scheme, $full_link);
       <div class="app__title">Ваша новая ссылка :</div>
       <div class="app__home">
         <a href="/">
-          <? echo file_get_contents("./assets/images/home.svg") ?></a>
+          <?echo file_get_contents("./assets/images/home.svg") ?></a>
       </div>
       <div class="app__output">
         <div class="app__output-message">
@@ -64,11 +64,48 @@ $url->save_link($short_link_no_scheme, $full_link);
         </div>
         <div class="app__output-full">
 
-          <?php echo "Your long link is: " . $url->render_full($full_link); ?>
+          <?php echo "Ваша полная ссылка: " . $url->render_full($full_link); ?>
         </div>
         <div class="app__output-short">
-          <?php echo "Your short link is: " . $url->render_redirect($short_link_no_scheme) . "<br />"; 
-                    ?>
+          <?php echo "Ваша короткая ссылка: " . $url->render_redirect($short_link_no_scheme) . "<br />";
+?>
+        </div>
+        <div class="app__output-links-ip">
+          <div class="app__output-links-ip-title">С этого ip адреса были запрошены следующие ссылки:</div>
+          <div class="app__output-links-ip-links">
+            <?php foreach ($short_links_ip as $short_link) {
+                $short_link_rendered = $url->render_short($short_link['full_url'],$short_link['short_url']);
+                $short_link_ip = $short_link['ip_address'];
+                $date = $short_link['date_create'];
+                echo "<div class='app__output-links-ip-link'>
+                      <div class='app__output-links-ip-shortlink'>{$short_link_rendered}
+                      </div>
+                      <div class='app__output-links-ip'>{$short_link['ip_address']}</div>
+                      <div class='app__output-links-ip-date'>{$date}</div>
+                      </div>";
+                }
+                ?>
+
+          </div>
+        </div>
+        <div class="app__output-links-sid">
+          <div class="app__output-links-sid-title">Для текущей сессии были запрошены следующие ссылки:</div>
+          <div class='app__output-links-sid-links'>
+            <?php
+              foreach ($short_links_sid as $short_link) {
+                  $short_link_rendered = $url->render_short($short_link['full_url'],$short_link['short_url']);
+                  $short_link_sid = $short_link['s_id'];
+                  $date = $short_link['date_create'];
+                  echo "<div class='app__output-links-sid-link'>
+                  <div class='app__output-links-sid-shortlink'>{$short_link_rendered}</div>
+                  <div class='app__output-links-sid'>{$short_link_sid}</div>
+                  <div class='app__output-links-sid-date'>{$date}</div>
+                  
+                  </div>";
+                }
+                ?>
+
+          </div>
         </div>
       </div>
     </div>

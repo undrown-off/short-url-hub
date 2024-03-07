@@ -64,7 +64,7 @@ class Url {
         if ($short_link && $full_link) {
             if (!$this->found_by_short_link($short_link) && !$this->found_by_full_link($full_link)) {
                 $d = date("Y-m-d");
-                DbQuery::execute("INSERT INTO short_url (short_url,full_url,date_create) VALUES(?,?,?)",[$short_link, $full_link, $d ]);
+                DbQuery::execute("INSERT INTO short_url (short_url,full_url,date_create,ip_address,s_id) VALUES(?,?,?,?,?)",[$short_link, $full_link, $d, $_SERVER["REMOTE_ADDR"],session_id()]);
             }
         }
     }
@@ -84,6 +84,15 @@ class Url {
         return "<a href=\"https://{$_SERVER["SERVER_NAME"]}/go?{$short_link_no_scheme}\" target=\"_blank\">{$short_link_no_scheme}</a><br/>";
     }
     
+    public function find_short_links_by_ip(string $ip):array{
+      $data = DbQuery::fetchAll("SELECT * FROM short_url WHERE `ip_address` = ?",[$ip]);
+      return $data;
+    }
+
+    public function find_short_links_by_sid(string $sid):array{
+      $data = DbQuery::fetchAll("SELECT * FROM short_url WHERE `s_id` = ?",[$sid]);
+      return $data;
+    }
 
 }
 
