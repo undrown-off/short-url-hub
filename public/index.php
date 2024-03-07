@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 if (!isset($_SERVER["REQUEST_URI"]))
 die();
 const DS = DIRECTORY_SEPARATOR;

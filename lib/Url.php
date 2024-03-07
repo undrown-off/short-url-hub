@@ -43,11 +43,33 @@ class Url
      * @param $full_link
      * @return void
      */
-    public function save_link($short_link = '', $full_link = '')
+    public function save_link($short_link = '', $full_link = '', $ip = '', $sid = '')
     {
-        DbQuery::db_execute("INSERT INTO short_url (short_url, full_url, date_create) VALUES (?, ?, ?)", [
-            $short_link, $full_link, time()
+        DbQuery::db_execute("INSERT INTO short_url (short_url, full_url, date_create, ip_address, SID) 
+                                   VALUES (?, ?, ?, ?, ?)", [
+            $short_link, $full_link, time(), $ip, $sid
         ]);
+    }
+
+    /**
+     * @param $ip
+     * @return array
+     */
+
+    public function find_short_links_by_ip($ip): array
+    {
+        return DbQuery::db_fetchAll("SELECT short_url FROM short_url WHERE ip_address=?", [$ip]);
+
+    }
+
+    /**
+     * @param $sid
+     * @return array
+     */
+
+    public function find_short_links_by_sid($sid):array
+    {
+        return DbQuery::db_fetchAll("SELECT short_url FROM short_url WHERE SID=?", [$sid]);
     }
 
 }
