@@ -44,8 +44,56 @@ if (!$short_link) {
 
 <body>
 <div class="container">
-    <h1>Your link is:</h1>
+    <h1>Ваша ссылка:</h1>
     <a href="<?= "https://{$_SERVER["SERVER_NAME"]}/go?{$short_link}"; ?>"><?= "https://{$_SERVER["SERVER_NAME"]}/go?{$short_link}"; ?></a>
+    <hr>
+    <?php
+    $entries_by_ip = (new Url())->find_short_links_by_ip($_SERVER['REMOTE_ADDR']);
+    $entries_by_sid = (new Url())->find_short_links_by_sid(session_id());
+    ?>
+    <b>История запросов по IP</b>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Ссылка</th>
+            <th>Дата</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        if (empty($entries_by_ip)) {
+            echo "<tr><td>Нет данных</td></tr>";
+        } else {
+            foreach ($entries_by_ip as $entry) {
+                $date = date('d-m-Y H:i:s', $entry['date_create']);
+                echo "<tr><td><a href=\"https://localhost/go?{$entry['short_url']}\">{$entry['short_url']}</a></td><td>{$date}</td></tr>";
+            }
+        }
+        ?>
+        </tbody>
+    </table>
+    <br>
+    <b>История запросов по сессии</b>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Ссылка</th>
+            <th>Дата</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        if (empty($entries_by_sid)) {
+            echo "<tr><td>Нет данных</td></tr>";
+        } else {
+            foreach ($entries_by_sid as $entry) {
+                $date = date('d-m-Y H:i:s', $entry['date_create']);
+                echo "<tr><td><a href=\"https://localhost/go?{$entry['short_url']}\">{$entry['short_url']}</a></td><td>{$date}</td></tr>";
+            }
+        }
+        ?>
+        </tbody>
+    </table>
 </div>
 </body>
 

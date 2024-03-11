@@ -26,7 +26,54 @@
 
         <button type="submit" class="btn btn-default">Создать короткую ссылку</button>
     </form>
+    <hr>
+    <?php
+    $entries_by_ip = (new Url())->find_short_links_by_ip($_SERVER['REMOTE_ADDR']);
+    $entries_by_sid = (new Url())->find_short_links_by_sid(session_id());
+    ?>
+    <b>История запросов по IP</b>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Ссылка</th>
+            <th>Дата</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        if (empty($entries_by_ip)) {
+            echo "<tr><td>Нет данных</td></tr>";
+        } else {
+            foreach ($entries_by_ip as $entry) {
+                $date = date('d-m-Y H:i:s', $entry['date_create']);
+                echo "<tr><td><a href=\"https://localhost/go?{$entry['short_url']}\">{$entry['short_url']}</a></td><td>{$date}</td></tr>";
+            }
+        }
+        ?>
+        </tbody>
+    </table>
+    <br>
+    <b>История запросов по сессии</b>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Ссылка</th>
+            <th>Дата</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        if (empty($entries_by_sid)) {
+            echo "<tr><td>Нет данных</td></tr>";
+        } else {
+            foreach ($entries_by_sid as $entry) {
+                $date = date('d-m-Y H:i:s', $entry['date_create']);
+                echo "<tr><td><a href=\"https://localhost/go?{$entry['short_url']}\">{$entry['short_url']}</a></td><td>{$date}</td></tr>";
+            }
+        }
+        ?>
+        </tbody>
+    </table>
 </div>
 </body>
-
 </html>

@@ -3,6 +3,7 @@
 if (!isset($_SERVER["REQUEST_URI"]))
     die();
 
+session_start();
 const DS = DIRECTORY_SEPARATOR;
 const DIR_ROOT = __DIR__ . DS . ".." . DS;
 
