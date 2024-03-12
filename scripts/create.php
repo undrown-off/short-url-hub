@@ -27,7 +27,7 @@ if (!$short_link) {
         }
     }
 }
-$shor_link_by_ip = $url->find_short_links_by_ip($ip);
+$short_link_by_ip = $url->find_short_links_by_ip($ip);
 $short_link_by_sid = $url->find_short_links_by_sid($sid);
 ?>
 
@@ -50,14 +50,14 @@ $short_link_by_sid = $url->find_short_links_by_sid($sid);
 </div>
 <div class="container">
     <h3>Короткие ссылки с этого IP:</h3>
-    <?php foreach ($shor_link_by_ip as $link): ?>
-        <li><?= $link['short_url'] ?></li>
+    <?php foreach ($short_link_by_ip as $link): ?>
+        <li><?= "<a href=\"https://localhost/go?{$link['short_url']}\">{$link['short_url']}</a>" ?></li>
     <?php endforeach; ?>
 </div>
 <div class="container">
     <h3>Короткие ссылки с этого SID:</h3>
     <?php foreach ($short_link_by_sid as $link): ?>
-        <li><?= $link['short_url'] ?></li>
+        <li><?= "<a href=\"https://localhost/go?{$link['short_url']}\">{$link['short_url']}</a>" ?></li>
     <?php endforeach; ?>
 </div>
 </body>

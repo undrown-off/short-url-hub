@@ -31,5 +31,21 @@
         </form>
     </form>
 </div>
+<?php
+$short_link_by_ip = (new Url()) ->find_short_links_by_ip($_SERVER['REMOTE_ADDR']);
+$short_link_by_sid = (new Url()) ->find_short_links_by_sid(session_id());
+?>
+<div class="container">
+    <h3>Короткие ссылки с этого IP:</h3>
+    <?php foreach ($short_link_by_ip as $link): ?>
+        <li><?= "<a href=\"https://localhost/go?{$link['short_url']}\">{$link['short_url']}</a>" ?></li>
+    <?php endforeach; ?>
+</div>
+<div class="container">
+    <h3>Короткие ссылки с этого SID:</h3>
+    <?php foreach ($short_link_by_sid as $link): ?>
+        <li><?= "<a href=\"https://localhost/go?{$link['short_url']}\">{$link['short_url']}</a>" ?></li>
+    <?php endforeach; ?>
+</div>
 </body>
 </html>
