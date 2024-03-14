@@ -3,9 +3,8 @@
   margin: 0;
 }
 
-html,
-body {
-  height: 100%;
+html,body {
+  min-height: 100%;
   width: 100%;
   font-family: arial;
 }
@@ -15,7 +14,7 @@ body {
   display: flex;
   justify-content: center;
   padding-top: 200px;
-
+  height: 100%;
 }
 
 .bg-name{
@@ -132,7 +131,15 @@ color: grey;
 display: flex;
 flex-direction: column;
 }
+.app__output-links.active{
+  display: block;
+  height: auto;
+  padding-bottom: 20px;
+  font-size: 14px;
+  color:#a1a1a1;
+}
 .app__output-links{
+  display: none;
   padding-bottom: 20px;
   font-size: 14px;
   color:#a1a1a1;
@@ -142,7 +149,9 @@ padding-bottom: 10px;
 color:#a7a6a6;
 font-size: 16px;
 }
-
+.app__output-links-table{
+  width: 100%;
+}
 .app__output-links-ip-date,
 .app__output-links-sid-date{
   text-align: right;
@@ -152,4 +161,16 @@ font-size: 12px;
 }
 .app__output-links a{
   color:#a1a1a1;
+}
+.copy-btn{
+  cursor: pointer;
+  padding: 3px 10px;
+  margin-left: 20px;
+}
+.app__output-show-table{
+  cursor: pointer;
+  padding-bottom: 10px;
+}
+.app__output-show-table:hover{
+  color: gold;
 }

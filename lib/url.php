@@ -81,7 +81,8 @@ class Url {
     }
     
     public function render_redirect(string $short_link_no_scheme){
-        return "<a href=\"https://{$_SERVER["SERVER_NAME"]}/go?{$short_link_no_scheme}\" target=\"_blank\">{$short_link_no_scheme}</a><br/>";
+        $a = "{$_SERVER["SERVER_NAME"]}/go?{$short_link_no_scheme}";
+        return "<a href=\"https://{$a}\" target=\"_blank\">{$short_link_no_scheme}</a>";
     }
     
     public function find_short_links_by_ip(string $ip):array{

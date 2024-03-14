@@ -32,10 +32,12 @@ $short_links_sid = $url->find_short_links_by_sid(session_id());
         <input type="submit" value="Создать ссылку">
       </form>
 
+      <div class="app__output-show-table">Показать детали: </div>
+
       <div class="app__output-links">
         <div class="app__output-links-title">С этого ip адреса были запрошены следующие ссылки:</div>
         <div class="app__output-links-ip-links">
-          <table class='app__output-links'>
+          <table class='app__output-links-table'>
             <?php foreach ($short_links_ip as $short_link) {
                 $short_link_rendered = $url->render_short($short_link['full_url'],$short_link['short_url']);
                 $short_link_ip = $short_link['ip_address'];
@@ -78,6 +80,7 @@ $short_links_sid = $url->find_short_links_by_sid(session_id());
 
     </div>
   </main>
+  <script src="main.js"></script>
 </body>
 
 </html>

@@ -33,6 +33,8 @@ $url->save_link($short_link_no_scheme, $full_link);
 
 $short_links_ip  = $url->find_short_links_by_ip($_SERVER['REMOTE_ADDR']);
 $short_links_sid = $url->find_short_links_by_sid(session_id());
+
+
 ?>
 
 
@@ -50,6 +52,7 @@ $short_links_sid = $url->find_short_links_by_sid(session_id());
 </head>
 
 <body>
+
   <div class="bg-name">short-url-hub</div>
   <main class="app">
     <div class="app__inner">
@@ -67,13 +70,14 @@ $short_links_sid = $url->find_short_links_by_sid(session_id());
           <?php echo "Ваша полная ссылка: " . $url->render_full($full_link); ?>
         </div>
         <div class="app__output-short">
-          <?php echo "Ваша короткая ссылка: " . $url->render_redirect($short_link_no_scheme) . "<br />";
-?>
+
+          <?php echo "Ваша короткая ссылка: " . $url->render_redirect($short_link_no_scheme);?>
+          <button class="copy-btn">copy</button>
         </div>
-        <div class="app__output-links">
+        <div class="app__output-links active">
           <div class="app__output-links-title">С этого ip адреса были запрошены следующие ссылки:</div>
           <div class="app__output-links-ip-links">
-            <table class='app__output-links'>
+            <table class='app__output-links-table'>
               <?php foreach ($short_links_ip as $short_link) {
                 $short_link_rendered = $url->render_short($short_link['full_url'],$short_link['short_url']);
                 $short_link_ip = $short_link['ip_address'];
@@ -90,10 +94,10 @@ $short_links_sid = $url->find_short_links_by_sid(session_id());
             </table>
           </div>
         </div>
-        <div class="app__output-links">
+        <div class="app__output-links active">
           <div class="app__output-links-title">Для текущей сессии были запрошены следующие ссылки:</div>
           <div class='app__output-links-sid-links'>
-            <table class='app__output-links-sid'>
+            <table class='app__output-links-table'>
               <?php
               foreach ($short_links_sid as $short_link) {
                   $short_link_rendered = $url->render_short($short_link['full_url'],$short_link['short_url']);
@@ -115,6 +119,9 @@ $short_links_sid = $url->find_short_links_by_sid(session_id());
       </div>
     </div>
   </main>
+
+  <script src="main.js"></script>
+
 </body>
 
 </html>
