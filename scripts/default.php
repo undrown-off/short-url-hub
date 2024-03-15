@@ -33,7 +33,7 @@ $short_links_sid = $url->find_short_links_by_sid(session_id());
       </form>
 
       <div class="app__output-show-table">Показать детали: </div>
-
+      <div class="app__output-links-container">
       <div class="app__output-links">
         <div class="app__output-links-title">С этого ip адреса были запрошены следующие ссылки:</div>
         <div class="app__output-links-ip-links">
@@ -58,7 +58,7 @@ $short_links_sid = $url->find_short_links_by_sid(session_id());
       <div class="app__output-links">
         <div class="app__output-links-title">Для текущей сессии были запрошены следующие ссылки:</div>
         <div class='app__output-links-sid-links'>
-          <table class='app__output-links-sid'>
+          <table class='app__output-links-table'>
             <?php
               foreach ($short_links_sid as $short_link) {
                   $short_link_rendered = $url->render_short($short_link['full_url'],$short_link['short_url']);
@@ -77,7 +77,7 @@ $short_links_sid = $url->find_short_links_by_sid(session_id());
           </table>
         </div>
       </div>
-
+      </div> 
     </div>
   </main>
   <script src="main.js"></script>

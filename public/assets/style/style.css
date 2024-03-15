@@ -131,19 +131,21 @@ color: grey;
 display: flex;
 flex-direction: column;
 }
-.app__output-links.active{
-  display: block;
-  height: auto;
-  padding-bottom: 20px;
-  font-size: 14px;
-  color:#a1a1a1;
+.app__output-links-container{
+  height: 0;
+  overflow-y: scroll;
+  transition: height 0.5s ease;
+}
+.app__output-links-container.active{
+  height: 400px;
 }
 .app__output-links{
-  display: none;
-  padding-bottom: 20px;
   font-size: 14px;
   color:#a1a1a1;
+  overflow: hidden;
+  transition: height 0.5s ease;
 }
+
 .app__output-links-title{
 padding-bottom: 10px;
 color:#a7a6a6;
